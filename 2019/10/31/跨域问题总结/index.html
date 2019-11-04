@@ -88,7 +88,7 @@
 <meta property="og:description" content="一、什么是同源策略？同源：是指两个URL的协议，域名，端口完全相同。  域名localhost和127.0.0.1虽然都指向本机，还是属于跨域。  同源策略：从一个源上加载的脚本不允许访问另一个源的文档内容（#document），而所谓“跨域”其实是指“跨源”。 什么时候可能会访问到不同的源：  引入：同源策略对于资源如img，script，css和iframe等的访问做了限制，即可以加载引入，但">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2019/10/31/跨域问题总结/iframe跨域.PNG">
-<meta property="og:updated_time" content="2019-11-04T02:29:43.073Z">
+<meta property="og:updated_time" content="2019-11-04T07:09:09.251Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="跨域问题总结">
 <meta name="twitter:description" content="一、什么是同源策略？同源：是指两个URL的协议，域名，端口完全相同。  域名localhost和127.0.0.1虽然都指向本机，还是属于跨域。  同源策略：从一个源上加载的脚本不允许访问另一个源的文档内容（#document），而所谓“跨域”其实是指“跨源”。 什么时候可能会访问到不同的源：  引入：同源策略对于资源如img，script，css和iframe等的访问做了限制，即可以加载引入，但">
@@ -361,125 +361,76 @@
 <ul>
 <li><p>在a页面通过iframe标签嵌入b页面，如果没有同源策略，a中的脚本就可以访问b页面中的数据（操作b的dom），同理b中的脚本也能访问a中的数据。假设a在表单中输入账号密码，b可以绑定相应事件获取a的输入。实际情况是</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在http://www.example.com/a.html中，注意b.html的域名与a.html不同</span></span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> iframe = <span class="built_in">document</span>.getElementById(<span class="string">'￼ifame'</span>);</span><br><span class="line">        <span class="keyword">var</span> win = <span class="built_in">document</span>.contentWindow;<span class="comment">//可以获取到iframe里的window对象，但该window对象的属性和方法几乎是不可用的</span></span><br><span class="line">        <span class="keyword">var</span> doc = win.document;<span class="comment">//在跨域情况下获取不到iframe里的document对象</span></span><br><span class="line">        <span class="keyword">var</span> name = win.name;<span class="comment">//在跨域情况下同样获取不到window对象的name属性</span></span><br><span class="line">    &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;iframe id = "iframe" src="http:/</span><span class="regexp">/example.com/</span>b.html<span class="string">" onload = "</span>test()<span class="string">"&gt;&lt;/iframe&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
 </li>
-</ul>
-<ul>
-<li>假设用户访问了网站a，a的服务器给浏览器写入了a的相关信息，存在cookie中。用户又访问了网站b，没有同源策略，b中脚本是可以获取到a的cookie的，实际情况是b只能访问同域（路径和父路径）和父域下（路径和父路径）的cookie。（待确认）</li>
+<li><p>假设用户访问了网站a，a的服务器给浏览器写入了a的相关信息，存在cookie中。用户又访问了网站b，没有同源策略，b中脚本是可以获取到a的cookie的，实际情况是b只能访问同域（路径和父路径）和父域下（路径和父路径）的cookie。（待确认）</p>
+</li>
 </ul>
 <h3 id="三、如何跨域"><a href="#三、如何跨域" class="headerlink" title="三、如何跨域"></a>三、如何跨域</h3><p><strong>为什么需要跨域？</strong></p>
 <p>比如同一个公司的资源分布在不同的子域中，a.company.com需要访问b.company.com，这个时候就需要跨域。</p>
 <p><strong>常见的跨域类型和方法</strong></p>
 <ol>
 <li><p><strong>ajax</strong></p>
-<ul>
-<li><p><strong>jsonp</strong></p>
+<p>(1) <strong>jsonp</strong></p>
 <ul>
 <li><p>原理：本地定义一个函数，被script标签加载的脚本与当前文档看作属于同一个域，所以可以用script标签取得函数的执行语句，通过键值对把变量传给服务器，服务器通过函数参数把变量传回来实现跨域通信。直接返回函数执行，免去了对script异步监听的过程。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">dosomething</span>(<span class="params">jsondata</span>)</span>&#123;</span><br><span class="line">        <span class="comment">//处理获得的json数据</span></span><br><span class="line">    &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;script src="http:/</span><span class="regexp">/example.com/</span>data.php?callback=dosomething<span class="string">"&gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
 </li>
-<li><p>缺点：</p>
-<ol>
-<li>只能是get不能是post（标签性质决定）</li>
-<li>所有的网站都能通过src获取服务器变量，需要协商验证方式</li>
-</ol>
+<li><p>缺点：<br>1.只能是get不能是post（标签性质决定）<br>2.所有的网站都能通过src获取服务器变量，需要协商验证方式</p>
 </li>
 </ul>
-</li>
-<li><p><strong>后台配置cors</strong>(cross-origin resource sharing)</p>
+<p>(2) <strong>后台配置cors</strong>(cross-origin resource sharing)</p>
 <ul>
 <li><p>原理：利用自定义的HTTP头部让浏览器和服务器进行沟通，后台进行配置，兼容的浏览器会在前端自动加上HTTP头。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//指定允许其他域名访问</span></span><br><span class="line"><span class="string">'Access-Control-Allow-Origin:*'</span><span class="comment">//或指定域</span></span><br><span class="line"><span class="comment">//响应类型</span></span><br><span class="line"><span class="string">'Access-Control-Allow-Methods:GET,POST'</span></span><br><span class="line"><span class="comment">//响应头设置</span></span><br><span class="line"><span class="string">'Access-Control-Allow-Headers:x-requested-with,content-type'</span></span><br></pre></td></tr></table></figure>
-
-
+</li>
+<li><p>兼容性：IE8以下不支持，IE8和IE9支持但有限制</p>
 </li>
 </ul>
 </li>
-</ul>
-</li>
-</ol>
-<pre><code>- 兼容性：IE8以下不支持，IE8和IE9支持但有限制</code></pre><ol start="2">
 <li><p><strong>iframe</strong></p>
-<ul>
-<li><p><strong>设置document.domain</strong></p>
+<p>(1) <strong>设置document.domain</strong></p>
 <ul>
 <li><p>适用对象：iframe，cookie</p>
 </li>
-<li><p>使用限制： 只能把<strong>document.domain</strong>设置成<strong>自身</strong>或<strong>更高一级的父域</strong>，且<strong>主域必须相同</strong> 。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// http://www.example.com/a.html</span></span><br><span class="line">   &lt;iframe id = <span class="string">"iframe"</span> src=<span class="string">"http://example.com/b.html"</span> onload = <span class="string">"test()"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-
+<li><p>使用限制：只能把<strong>document.domain</strong>设置成<strong>自身</strong>或<strong>更高一级的父域</strong>，且<strong>主域必须相同</strong> </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// http://www.example.com/a.html</span></span><br><span class="line">&lt;iframe id = <span class="string">"iframe"</span> src=<span class="string">"http://example.com/b.html"</span> onload = <span class="string">"test()"</span>&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="built_in">document</span>.domain = <span class="string">'example.com'</span>;<span class="comment">//设置成主域</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        alert(<span class="built_in">document</span>.getElementById(<span class="string">'￼iframe'</span>).contentWindow);<span class="comment">//contentWindow 可取得子窗口的window 对象</span></span><br><span class="line">    &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/http:/</span><span class="regexp">/example.com/</span>b.html</span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="built_in">document</span>.domain = <span class="string">'example.com'</span>;<span class="comment">//在iframe载入这个页面也设置document.domain，使之与主页面的document.domain相同</span></span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>缺点：<br>1.company.com如果被攻击，子域全都可能被攻击<br>2.<strong>只适用于不同子域之间iframe的交互</strong></p>
 </li>
 </ul>
-<script type="text/javascript">
-      document.domain = 'example.com';//设置成主域
-      function test(){
-          alert(document.getElementById('￼iframe').contentWindow);//contentWindow 可取得子窗口的window 对象
-      }
-  </script>
-
-<p>  // <a href="http://example.com/b.html" target="_blank" rel="noopener">http://example.com/b.html</a></p>
-  <script type="text/javascript">
-      document.domain = 'example.com';//在iframe载入这个页面也设置document.domain，使之与主页面的document.domain相同
-  </script>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">​    </span><br><span class="line"></span><br><span class="line">    如把&apos;www.example.com&apos;改为&apos;example.com&apos;，这样就可以访问src中域名为’example.com‘的iframe，也可以被url为’b.company.com‘或’company.com‘的页面共享cookie，注意改为example.com之后不能再改回&apos;www.example.com&apos;</span><br><span class="line"></span><br><span class="line">  - 缺点：</span><br><span class="line"></span><br><span class="line">    1. company.com如果被攻击，子域全都可能被攻击</span><br><span class="line">    2. **只适用于不同子域之间iframe的交互**</span><br><span class="line"></span><br><span class="line">- **使用window.name属性进行通信**</span><br><span class="line"></span><br><span class="line">  - 原理： window对象有个name属性，该属性有个特征：即在**一个窗口(window)的生命周期**内,窗口载入的所有的页面都是共享一个window.name的，每个页面对window.name都有读写的权限，window.name是持久存在一个窗口载入过的所有页面中的，并不会因新页面的载入而进行重置。 </span><br><span class="line"></span><br><span class="line">    ```javascript</span><br><span class="line">    //一、页面跳转window.name不变</span><br><span class="line">    // a页面</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        window.name = &apos;a页面设置window.name&apos;;</span><br><span class="line">    	window.location = &apos;b.html&apos;;</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    </span><br><span class="line">    // b页面（即时a，b不同源同样适用）</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        alert(window.name); //输出’a页面设置window.name‘</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    </span><br><span class="line">    //二、页面不跳转，通过iframe作为代理获取iframe的window.name</span><br><span class="line">    //www.a页面</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        window.name=&quot;我是www.a想要传给b的数据&quot;</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    </span><br><span class="line">    //b页面，包含一个隐式的iframe指向www.a</span><br><span class="line">    &lt;iframe id=&quot;proxy&quot; src=&quot;www.a&quot; style=&quot;display:none&quot; onload=&quot;getData()&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;script&gt;</span><br><span class="line">       function getData()&#123;</span><br><span class="line">        	var iframe = document.getElementById(&apos;proxy&apos;);</span><br><span class="line">        	//改变src之后会重新触发iframe的onload，函数必须提前申明不然可能iframe异步加载完了函数还没绑上去，就会错过onload的触发时机</span><br><span class="line">        	iframe.onload = function()&#123;</span><br><span class="line">                var data = iframe.contentWindow.name;</span><br><span class="line">                alert(data);</span><br><span class="line">            &#125;</span><br><span class="line">        	iframe.src = &apos;x.html&apos;; //将iframe的src改为任何同源页面都可以</span><br><span class="line">        	</span><br><span class="line">    	&#125; </span><br><span class="line">    &lt;/script&gt;</span><br></pre></td></tr></table></figure>
-
-
-</li>
+<p>(2) <strong>使用window.name属性进行通信</strong></p>
+<ul>
+<li>原理：window对象有个name属性，该属性有个特征：即在<strong>一个窗口(window)的生命周期</strong>内,窗口载入的所有的页面都是共享一个window.name的，每个页面对window.name都有读写的权限，window.name是持久存在一个窗口载入过的所有页面中的，并不会因新页面的载入而进行重置。</li>
+<li>注意：<br>1.window.name只能是字符串的形式，最大大概2M左右<br>2.将原本子域iframe通信扩展到了可以真正的跨域通信</li>
 </ul>
-</li>
-</ol>
-<pre><code>- 注意：
-
-  1. window.name只能是字符串的形式，最大大概2M左右
-  2. 将原本子域iframe通信扩展到了可以真正的跨域通信</code></pre><ul>
-<li><p><strong>使用window.postMessage方式通信（h5）</strong></p>
+<p>（3）<strong>使用window.postMessage方式通信（h5）</strong></p>
 <ul>
 <li><p>原理：发送者调用接收者的window对象的postMessage方法向其发消息，接收者调用自己的window对象监听onmessage事件获得收到的消息。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//a页面</span></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loaded</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> iframe = <span class="built_in">document</span>.getElementById(<span class="string">"bbb"</span>);</span><br><span class="line">    <span class="keyword">var</span> win = iframe.contentWindow;</span><br><span class="line">    <span class="comment">//win是接收者，参数一是发送的内容，参数二限定了接收者的域</span></span><br><span class="line">    win.postMessage(<span class="string">"a.html的信息"</span>,<span class="string">'*'</span>);</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;iframe id="bbb" src="b.html" onload="loaded()"&gt;&lt;/i</span>frame&gt;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//b页面</span></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="built_in">window</span>.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">    alert(e.data); <span class="comment">//通过监听获得数据</span></span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-
+</li>
+<li><p>兼容性：IE8+</p>
 </li>
 </ul>
 </li>
-</ul>
-<pre><code>- 兼容性：IE8+</code></pre><ol start="3">
 <li><p>cookie<br> cookie中的同源只关注域名和path，忽略了协议和端口，所以<a href="https://localhost:8080/和http://localhost:8081/的Cookie是共享的。" target="_blank" rel="noopener">https://localhost:8080/和http://localhost:8081/的Cookie是共享的。</a></p>
 </li>
 <li><p>websocket（不受同源策略限制）</p>
+<p>  需要服务器的配合，建立连接之后http/https协议会升级为ws/wss</p>
+   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> socket = <span class="keyword">new</span> WebSockt(<span class="string">'ws://www.baidu.com'</span>);<span class="comment">//http-&gt;ws; https-&gt;wss</span></span><br><span class="line">socket.send(<span class="string">'hello WebSockt'</span>);</span><br><span class="line">socket.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> data = event.data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 </li>
 </ol>
-<p>需要服务器的配合，建立连接之后http/https协议会升级为ws/wss</p>
-  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> socket = <span class="keyword">new</span> WebSockt(<span class="string">'ws://www.baidu.com'</span>);<span class="comment">//http-&gt;ws; https-&gt;wss</span></span><br><span class="line">socket.send(<span class="string">'hello WebSockt'</span>);</span><br><span class="line">socket.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = event.data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ol start="5">
 <li><p>img标签单向通信</p>
 <ul>
 <li><p>原理：和script标签类似，此类标签在发送消息时不受同源策略的影响</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">   img.onload = img.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">alert(<span class="string">"done!"</span>);</span><br><span class="line">   &#125;;</span><br><span class="line">img.src = <span class="string">"https://raw.githubusercontent.com/zhangmengxue/Todo-List/master/me.jpg"</span>;</span><br><span class="line">   <span class="built_in">document</span>.body.insertBefore(img,<span class="built_in">document</span>.body.firstChild);</span><br></pre></td></tr></table></figure>
-
-
-
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">img.onload = img.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  alert(<span class="string">"done!"</span>);</span><br><span class="line">&#125;;</span><br><span class="line">img.src = <span class="string">"https://raw.githubusercontent.com/zhangmengxue/Todo-List/master/me.jpg"</span>;</span><br><span class="line"><span class="built_in">document</span>.body.insertBefore(img,<span class="built_in">document</span>.body.firstChild);</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
+<li><p>缺点：<br>1.只能发送get请求<br>2.无法访问服务器的响应文本</p>
 </li>
-</ol>
-<ul>
-<li><p>缺点：</p>
-<ul>
-<li><p>只能发送get请求</p>
-</li>
-<li><p>无法访问服务器的响应文本</p>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li><p>类似的跨域内嵌标签</p>
+<li><p>类似的跨域内嵌标签   </p>
 <ul>
 <li>script</li>
 <li>link</li>
@@ -490,6 +441,8 @@
 </ul>
 </li>
 </ul>
+</li>
+</ol>
 <h3 id="四、参考链接"><a href="#四、参考链接" class="headerlink" title="四、参考链接"></a>四、参考链接</h3><blockquote>
 <p>情况汇总</p>
 <blockquote>
