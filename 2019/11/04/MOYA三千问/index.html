@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2019/11/04/MOYA三千问/变量提升.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/04/MOYA三千问/变量提升结果.png">
-<meta property="og:updated_time" content="2019-11-04T05:54:51.420Z">
+<meta property="og:updated_time" content="2019-11-04T06:30:44.315Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MOYA三千问">
 <meta name="twitter:description" content="1. line-height相关 line-height取15px，1.5em，150%和1.5有什么区别？ 首先line-height是由默认值的，经过测试会随着font-size的值变化，且底线为16px 设置px是固定值，1.5em和150%和1.5都是相对于当前标签的font-size而言的。 情况一：如果是inside设置了line-height，那都是相对于inside的font-si">
@@ -380,7 +380,39 @@
 <img src="/2019/11/04/MOYA三千问/变量提升结果.png" title="函数提升的测试结果">  
 
 <h3 id="5-number占多少位？string占多少位？"><a href="#5-number占多少位？string占多少位？" class="headerlink" title="5.number占多少位？string占多少位？"></a>5.number占多少位？string占多少位？</h3><p>64位，16位</p>
-<h3 id="6-什么是表达式"><a href="#6-什么是表达式" class="headerlink" title="6.什么是表达式"></a>6.什么是表达式</h3><h3 id="7-求余和取模的辨析"><a href="#7-求余和取模的辨析" class="headerlink" title="7. 求余和取模的辨析"></a>7. 求余和取模的辨析</h3><p>JS的%是取余，取余和取模在两个数都是正数时没有差别，对于存在一个负数的情况下，取余的商向0靠齐取整，取模的商向负无穷大靠齐取整。</p>
+<h3 id="6-什么是表达式"><a href="#6-什么是表达式" class="headerlink" title="6.什么是表达式"></a>6.什么是表达式</h3><p>可以简单理解为一种<strong>一定有返回值</strong>的语法结构</p>
+<p>分类：</p>
+<ul>
+<li><p><strong>单值表达式</strong>：没有运算符参与</p>
+<ul>
+<li><p><strong>简单表达式</strong>：无法再被分解</p>
+<p>举例：</p>
+<p>this关键字，</p>
+<p>变量，</p>
+<p>普通类型字面量（true，1，”haha“等）</p>
+</li>
+<li><p><strong>复杂表达式</strong>：没有运算符参与，但是由多种简单表达式构成</p>
+<p>举例：</p>
+<p>引用类型的字面量（{a:1,b:2}，[1,2,3])，</p>
+<p>函数定义（不是函数申明，函数定义才有返回值），</p>
+<p>属性调用（如果把”.“看作运算符的话也可以加入复合表达式之中）</p>
+<p>方法调用（func（arg1，arg2））</p>
+</li>
+</ul>
+</li>
+<li><p><strong>复合表达式</strong>：有运算符参与</p>
+<p>举例：</p>
+<p>typeof  ”haha“，</p>
+<p>3+5/2，</p>
+<p>false &amp;&amp; true，</p>
+<p>1？true ：false，</p>
+<p>x = 5 （返回值是5）</p>
+</li>
+</ul>
+<blockquote>
+<p>参考链接： <a href="https://www.cnblogs.com/fangsmile/p/8337021.html" target="_blank" rel="noopener">https://www.cnblogs.com/fangsmile/p/8337021.html</a> </p>
+</blockquote>
+<h3 id="7-求余和取模的辨析"><a href="#7-求余和取模的辨析" class="headerlink" title="7. 求余和取模的辨析"></a>7. 求余和取模的辨析</h3><p>JS的%是取余，取余和取模在两个数都是正数时没有差别，对于存在一个负数的情况下，取余的商向0靠齐取整，取模的商向负无穷大靠齐取整。</p>
 <p>第一步：求整数商，c=a/b</p>
 <p>第二步：取模/取余，r=a-c*b</p>
 <p>假设 c=-1/5，取余的情况c=0，r=-1，取模的情况c=1，r=4</p>
