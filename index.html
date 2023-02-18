@@ -51,7 +51,16 @@
 <p> 如果本地的user.email可以和github上的emai不匹配，那么提交者就是本地的username，不同的username会被认为是不同的author</p>
  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 可以并行两套配置</span><br><span class="line">git config --local --list</span><br><span class="line">git config --global --list</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p> 测试local覆盖 无效<br> 如果取消了全局配置 </p>
+<p> 测试local覆盖 无效<br> 如果取消了全局配置 会有提醒但还是会提交成功<br> Committer: Roger Lin <a href="mailto:&#x72;&#x6f;&#x67;&#101;&#114;&#x6c;&#105;&#110;&#64;&#x52;&#111;&#x67;&#x65;&#114;&#x64;&#101;&#77;&#97;&#x63;&#66;&#111;&#111;&#x6b;&#x2d;&#80;&#x72;&#111;&#x2e;&#x6c;&#111;&#99;&#x61;&#108;">&#x72;&#x6f;&#x67;&#101;&#114;&#x6c;&#105;&#110;&#64;&#x52;&#111;&#x67;&#x65;&#114;&#x64;&#101;&#77;&#97;&#x63;&#66;&#111;&#111;&#x6b;&#x2d;&#80;&#x72;&#111;&#x2e;&#x6c;&#111;&#99;&#x61;&#108;</a><br>Your name and email address were configured automatically based<br>on your username and hostname. Please check that they are accurate.<br>You can suppress this message by setting them explicitly:</p>
+<pre><code>git config --global user.name &quot;Your Name&quot;
+git config --global user.email you@example.com
+</code></pre>
+<p>After doing this, you may fix the identity used for this commit with:</p>
+<pre><code>git commit --amend --reset-author
+</code></pre>
+<p> 2 files changed, 2 insertions(+), 2 deletions(-)</p>
+<p> 所以github是以全局的配置为准的，local配置并没有用<br> &#96;<br> &#x2F;&#x2F; 取消配置<br> git config –unset user.name </p>
+<p> git config –unset –global user.name<br> &#96;</p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2023/02/17/hello-world/">Hello World</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2023-02-17</time><div class="content"><p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
